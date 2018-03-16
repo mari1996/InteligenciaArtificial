@@ -1,4 +1,5 @@
 # Inteligencia Artificial
 EP de Text Clustering
 
-Lucas de Sá Pereira - 9277534
+Link para o overleaf:
+https://www.overleaf.com/14711193wnyjhdwdsqgy
