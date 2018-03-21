@@ -1,0 +1,188 @@
+install.packages('tm')
+require('tm')
+
+foldedir="colocar o caminho da pasta"
+
+cat(foldedir)
+
+CorpusVar <- Corpus(DirSource(foldedir, encoding="UTF-8", recursive=FALSE, ignore.case = False, mode = "text"), readerControl = list(readPlain, language = "en"))
+
+CorpusVar <- tm_map(CorpusVar, content_transformer(tolower))
+
+CorpusVar <- tm_map(CorpusVar, removePunctuation)
+
+CorpusVar <- tm_map(CorpusVar, stripWhitespace)
+
+myStopWords = c('i',
+                'me',
+                'my',
+                'myself',
+                'we',
+                'our',
+                'ours',
+                'ourselves',
+                'you',
+                'your',
+                'yours',
+                'yourself',
+                'yourselves',
+                'he',
+                'him',
+                'his',
+                'himself',
+                'she',
+                'her',
+                'hers',
+                'herself',
+                'it',
+                'its',
+                'itself',
+                'they',
+                'them',
+                'their',
+                'theirs',
+                'themselves',
+                'what',
+                'which',
+                'who',
+                'whom',
+                'this',
+                'that',
+                'these',
+                'those',
+                'am',
+                'is',
+                'are',
+                'was',
+                'were',
+                'be',
+                'been',
+                'being',
+                'have',
+                'has',
+                'had',
+                'having',
+                'do',
+                'does',
+                'did',
+                'doing',
+                'a',
+                'an',
+                'the',
+                'and',
+                'but',
+                'if',
+                'or',
+                'because',
+                'as',
+                'until',
+                'while',
+                'of',
+                'at',
+                'by',
+                'for',
+                'with',
+                'about',
+                'against',
+                'between',
+                'into',
+                'through',
+                'during',
+                'before',
+                'after',
+                'above',
+                'below',
+                'to',
+                'from',
+                'up',
+                'down',
+                'in',
+                'out',
+                'on',
+                'off',
+                'over',
+                'under',
+                'again',
+                'further',
+                'then',
+                'once',
+                'here',
+                'there',
+                'when',
+                'where',
+                'why',
+                'how',
+                'all',
+                'any',
+                'both',
+                'each',
+                'few',
+                'more',
+                'most',
+                'other',
+                'some',
+                'such',
+                'no',
+                'nor',
+                'not',
+                'only',
+                'own',
+                'same',
+                'so',
+                'than',
+                'too',
+                'very',
+                's',
+                't',
+                'can',
+                'will',
+                'just',
+                'don',
+                'should',
+                'now',
+                'd',
+                'll',
+                'm',
+                'o',
+                're',
+                've',
+                'y',
+                'ain',
+                'aren',
+                'couldn',
+                'didn',
+                'doesn',
+                'hadn',
+                'hasn',
+                'haven',
+                'isn',
+                'ma',
+                'mightn',
+                'mustn',
+                'needn',
+                'shan',
+                'shouldn',
+                'wasn',
+                'weren',
+                'won',
+                'wouldn'
+)
+
+CorpusVar <- tm_map(CorpusVar, removeWords, myStopWords)
+
+install.packages("SnowballC")
+
+CorpusVar <- tm_map(CorpusVar, stemDocument)
+
+tdm <- TermDocumentMatrix(CorpusVar, control = list(weightin = function(x)weightTfIdf(x, normalize=TRUE), minWordLength=1, minDoqFreq=1))
+
+inspect(tdm)
+
+m <- as.matrix(tdm)
+
+dim(m)
+
+write.csv(m, file="C:/Users/Mariana/Desktop/IA/teste_R/testeSaida.csv")
+
+
+
