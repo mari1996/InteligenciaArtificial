@@ -40,17 +40,20 @@ CorpusVar <- tm_map(CorpusVar, stemDocument, language="english")
 tdm <- TermDocumentMatrix(CorpusVar)
 #converte pra matriz
 m <- as.matrix(tdm)
+#colocar pasta específica de saída com o nome do arquivo
 write.csv(m, file="C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.csv")
 
 #A segunda representação é a binária
 m <- weightBin(tdm)
 #converte pra matriz
 m2 <- as.matrix(m)
+#colocar pasta específica de saída com o nome do arquivo
 write.csv(m2, file="C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_Binario.csv")
 
 #A terceira representação é a TFIDF
 terms <-DocumentTermMatrix(CorpusVar,control = list(weighting = function(x) weightTfIdf(x, normalize = FALSE)))
 #converte pra matriz
 m3 <- as.matrix(terms)
+#colocar pasta específica de saída com o nome do arquivo                           
 write.csv(m3, file="C:/Users/Mariana/Desktop/IA/Saidas_teste/TFIDF.csv")
 
