@@ -210,7 +210,7 @@ def execute(entrada, maxClusters, maxErro, maxIters):
      
     escrita(entrada, maxClusters, tempo_total, maxErro, vetorPalavras, dados_cluster, 1, iteracoes)
 
-    return dados_cluster
+    return
 
 
 num_clusters = 2
@@ -219,6 +219,4 @@ iteracoes = 9
 
 arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.csv'
 
-i = 0
-
-olar = execute(arquivo, num_clusters, erro, iteracoes)
+execute(arquivo, num_clusters, erro, iteracoes)
