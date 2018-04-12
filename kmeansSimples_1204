@@ -180,6 +180,8 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, vetor_palavras, ve
     arquivo.write('Tempo total de execução: '+str(tempo_total)+'\n')
     arquivo.write('Taxa de erro permitida: '+str(erro)+'\n')
     arquivo.write('Total de iteracoes: '+str(iteracoes)+'\n')
+    arquivo.write('Distância usada: euclidiana')
+    arquivo.write('\n')
     arquivo.write('\n')
     
     #escrever o total de dados por cluster
