@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 11 20:42:02 2018
+Created on Thu Apr 12 18:13:04 2018
 
 @author: Mariana
 """
@@ -182,6 +182,8 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, vetor_palavras, ve
     arquivo.write('Total de iteracoes: '+str(iteracoes)+'\n')
     arquivo.write('\n')
     
+    #escrever o total de dados por cluster
+    
     #printar os dados e os clusters
     m = 0
     
@@ -200,18 +202,15 @@ def execute(entrada, maxClusters, maxErro, maxIters):
     
     vetorPalavras, vetorNumeros = encontraDadosPalavras(entrada)
     
-    #aqui vai ter um while variando num_clusters, erro e iteracoes
-    
     start = time.time()
     
     centroides, dados_cluster, iteracoes = kmeans(num_clusters, erro, vetorNumeros.data.shape[0], vetorNumeros.data.shape[1], vetorNumeros, maxIters)
     
     tempo_total = ("--- %s seconds ---" % (time.time() - start))
      
-    escrita(entrada, maxClusters, tempo_total, maxErro, vetorPalavras, dados_cluster, 1, maxIters)
-    
-    
-    return
+    escrita(entrada, maxClusters, tempo_total, maxErro, vetorPalavras, dados_cluster, 1, iteracoes)
+
+    return dados_cluster
 
 
 num_clusters = 2
@@ -220,4 +219,6 @@ iteracoes = 9
 
 arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.csv'
 
-execute(arquivo, num_clusters, erro, iteracoes)
+i = 0
+
+olar = execute(arquivo, num_clusters, erro, iteracoes)
