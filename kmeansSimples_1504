@@ -1,27 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 12 18:13:04 2018
+Created on Sun Apr 15 12:44:23 2018
 
 @author: Mariana
 """
 
-#K-means
+#K-means implementado com distancia euclidiana
+
 import pandas as pd
 import numpy as np
 import time
 import datetime
 
-#funcao pra calcular a distancia euclidiana entre dois vetores
-def distanciaEuclidiana (vetor1, vetor2):   
-    return np.linalg.norm(vetor1 - vetor2)
-
-#funcao que carrega o arquivo de entrada para kmeans
-def carregaTXT(nome):    
-    return np.loadtxt(nome)
-
-#funcao usada pra pegar as palavras que existem no csv
+#funcao criada para pegar o conteudo que esta dentro do excel passado
 def pegaTexto (nome):   
-    return pd.read_csv(nome, encoding = 'iso-8859-1')
+    return pd.read_excel(nome, encoding = 'iso-8859-1')
+
+def distanciaEuclidiana (vetor1, vetor2):  
+    
+    soma = np.sum((vetor1 - vetor2)**2)
+    raiz = np.sqrt(soma)
+    return raiz
 
 #funcao kmeans
 def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_iteracoes):   
@@ -73,8 +72,6 @@ def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_it
         for indice_dado, dado in enumerate(vetor_dados):
             #definimos um vetor de tamanho num_clusters, pois temos num_clusters centroides que devem ser recalculados
             distancia_dados = np.zeros((num_clusters, 1))
-            #preenche vetor com -1
-            #distancia_dados.fill(-1)
             #para cada centroide que possuimos, precisamos calcular as distancias dos dados ate eles
             for indice_centroide, centroide in enumerate(centroides):
                 #vamos calcular a distancia de cada dado ate cada centroide
@@ -110,115 +107,104 @@ def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_it
             temp_centroides[indice, :] = centroide
             
         centroides = temp_centroides
-#           
+           
     return centroides, dados_cluster, iteracoes
 
-def encontraDadosPalavras(arquivo_entrada):
-       
-    #escrita(entrada_dados, )
-    
-    #pegamos o csv lido e transformamos num dataframe
-    #no entanto nao podemos fazer manipulacao de palavras e nem de numeros nele
-    palavras = pegaTexto(arquivo_entrada)
-    
-    #vamos pegar tudo o que esta no dataframe lido e salvar numa lista
-    texto_quebrado = palavras.values.tolist()
-    
-    #descobrimos o tamanho dessa matriz que veio do dataframe
-    linhas = len(texto_quebrado)
-    colunas = len(texto_quebrado[0])
-    
-    #temos o dataframe quebrado numa grande matriz
-    #agora separamos, na matriz, o que e dado do que e palavra
-    palavras = []
-    
-    #e criamos um vetor que vai guardar todos os numeros que estao associados a uma palavra
-    valores_palavras = np.zeros((linhas, colunas - 1))
-       
-    #esse laço vai percorrer a lista que representa o dataframe, pegar todas as palavras e salvar numa lista separada
-    i = 0
+##################################################################################################################################
 
-    while i < linhas:
-        palavras.append(texto_quebrado[i][0])
-        i += 1
+arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF_transp.xlsx'
 
-    #esse laco vai percorrer a lista que representa o dataframe e pegar os valores que estao associados a cada palavra
-    a = 0
+#a matriz dados vai guardar todo o conteudo lido do arquivo, inclusive os cabecalhos (documentos e palavras)
+dados = pegaTexto(arquivo)
+
+palavras = dados.axes[1].tolist()
+documentos = dados.axes[0].tolist()
+
+#a variavel "colunas" guarda a quantidade de colunas que existem no excel passado
+colunas = dados.shape[1]
+
+#a variavel "linhas" guarda a quantidade de linhas que existem no arquivo passado
+linhas = dados.shape[0]
+
+#o vetor conteudo guarda os valores numericos pegos no excel, ou seja, as aparicoes das palavras nos textos
+conteudo = dados.values.tolist()
+
+#esse vetor "valores" vai guardar todas as informacoes numericas que sao pegas no excel
+#ou seja, esse vetor vai conter as aparicoes das palavras nos textos
+valores = np.zeros((linhas, colunas))
+
+a = 0
+b = 0
+
+#esse loop vai guardar os valores de conteudo em um outro vetor
+#verificar se e realmente necessario criar essa matriz
+while a < linhas:
+    while b< colunas:
+        valores[a][b] = conteudo[a][b]
+        b+=1
     b = 1
-    
-    while a < linhas:
-        while b < colunas - 1:
-            valores_palavras[a][b - 1] = texto_quebrado[a][b]
-            b+=1
-        b = 1
-        a+=1
-    
-    return palavras, valores_palavras
+    a+=1
 
 
 #funcao que faz a escrita do log execucao
-def escrita(arquivo_entrada, num_clusters, tempo_total, erro, vetor_palavras, vetor_cluster, numArquivo, iteracoes):
+def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluster, numArquivo, iteracoes):
     
     #essa funcao faz a escrita do log de execucao de cada chamada ao k-means e salva no seguinte formato:
-    #arquivo de saida:
-        #arquivo de entrada usado
-        #numero de clusters
-        #tempo de execucao
-        #taxa de erro para aquela execucao
-        #quantidade de dados por cluster (descobrir um jeito de fazer um while que vai contar quantos clusters
-            #tem e jogar numa lista, e então vai sair contando quantos elementos tem em cada cluster)
-        #dados x cluster
     arquivo = open('C:/Users/Mariana/Desktop/IA/saidas/execucao'+str(numArquivo)+'.txt', 'w')
     
     now = datetime.datetime.now()
     
-    arquivo.write('Execução feita em: '+str(now.day)+'/'+str(now.month)+'/'+str(now.year)+' - '+str(now.hour)+':'+str(now.minute)+'\n')
+    arquivo.write('Execução feita em '+str(now.day)+'/'+str(now.month)+'/'+str(now.year)+' - '+str(now.hour)+':'+str(now.minute)+'\n')
     
     arquivo.write('\n')
-    arquivo.write('Arquivo de entrada: '+arquivo_entrada+'\n')
+    arquivo.write('Arquivo de entrada '+arquivo_entrada+'\n')
     arquivo.write('Numero de clusters: '+str(num_clusters)+'\n')
     arquivo.write('Tempo total de execução: '+str(tempo_total)+'\n')
-    arquivo.write('Taxa de erro permitida: '+str(erro)+'\n')
+    arquivo.write('Taxa de erro máxima permitida: '+str(erro)+'\n')
     arquivo.write('Total de iteracoes: '+str(iteracoes)+'\n')
     arquivo.write('Distância usada: euclidiana')
     arquivo.write('\n')
     arquivo.write('\n')
     
-    #escrever o total de dados por cluster
-    
-    #printar os dados e os clusters
+    #mandar qual documento ficou em cada cluster
     m = 0
     
-    while m < len(vetor_palavras):
-        arquivo.write('Palavra: '+str(vetor_palavras[m])+' - Cluster: '+str(int(vetor_cluster.item(m)))+'\n')
+    while m < len(docs):
+        arquivo.write('Documento '+str(docs[m])+' - Cluster '+str(int(vetor_cluster.item(m)))+'\n')
         m += 1
+    
     
     arquivo.close()
     
     return
 
-def execute(entrada, maxClusters, maxErro, maxIters):
-    
-    #essa funcao faz as execucoes 
-    #sao varias chamadas feitas ao k-means, variando os parametros numClusters, taxa_erro e iteracoes
-    
-    vetorPalavras, vetorNumeros = encontraDadosPalavras(entrada)
-    
-    start = time.time()
-    
-    centroides, dados_cluster, iteracoes = kmeans(num_clusters, erro, vetorNumeros.data.shape[0], vetorNumeros.data.shape[1], vetorNumeros, maxIters)
-    
-    tempo_total = ("--- %s seconds ---" % (time.time() - start))
-     
-    escrita(entrada, maxClusters, tempo_total, maxErro, vetorPalavras, dados_cluster, 1, iteracoes)
+##################################################################################################################################
 
+
+#o execute fica aqui
+#ele serve como um main que vai chamar varias vezes o kmeans, sempre variando os parametros usados    
+def execute(clusters, erro, maxIter):
+
+    k = 0
+    
+    while k < maxIter:
+        
+        start = time.time()
+    
+        centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
+        
+        tempo_total = ("--- %s seconds ---" % (time.time() - start))
+        
+        escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, k, iteracoes)
+        
+        k+=1
+    
     return
 
 
 num_clusters = 2
-erro = 0.0
-iteracoes = 9
+taxa_erro = 0.0
+max_iteracoes = 15
 
-arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.csv'
+execute(num_clusters, taxa_erro, max_iteracoes)
 
-execute(arquivo, num_clusters, erro, iteracoes)
