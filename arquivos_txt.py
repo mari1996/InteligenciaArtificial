@@ -4,6 +4,8 @@ Created on Sun Apr 15 20:45:35 2018
 
 @author: Mariana
 """
+
+#esse código quebra os documentos do txt "Process Mining Abstracts" em vários txt diferentes
 #Quebrar documentos do arquivo de texto em vários arquivos txt
 
 import pandas as pd
