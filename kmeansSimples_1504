@@ -112,7 +112,7 @@ def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_it
 
 ##################################################################################################################################
 
-arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF_transp.xlsx'
+arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.xlsx'
 
 #a matriz dados vai guardar todo o conteudo lido do arquivo, inclusive os cabecalhos (documentos e palavras)
 dados = pegaTexto(arquivo)
@@ -185,26 +185,24 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluste
 #ele serve como um main que vai chamar varias vezes o kmeans, sempre variando os parametros usados    
 def execute(clusters, erro, maxIter):
 
-    k = 0
     
-    while k < maxIter:
-        
-        start = time.time()
+#    while k < maxIter:
+#        
+    start = time.time()
+
+    centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
     
-        centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
-        
-        tempo_total = ("--- %s seconds ---" % (time.time() - start))
-        
-        escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, k, iteracoes)
-        
-        k+=1
+    tempo_total = ("--- %s seconds ---" % (time.time() - start))
+    
+    escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, 1, iteracoes)
+    
+      
     
     return
 
 
-num_clusters = 2
+num_clusters = 10
 taxa_erro = 0.0
 max_iteracoes = 15
 
 execute(num_clusters, taxa_erro, max_iteracoes)
-
