@@ -16,17 +16,17 @@ import datetime
 def pegaTexto (nome):   
     return pd.read_excel(nome, encoding = 'iso-8859-1')
 
+#funcao que calcula a distancia euclidiana entre dois vetores (de qualquer dimensao)
 def distanciaEuclidiana (vetor1, vetor2):  
-    
+    #de inicio fazemos a soma dos valores dos dois vetores passados (essa soma é feita entre posicoes, por exemplo
+    #vetor1[i] com vetor2[i] e assim sucessivamente) e elevamos ao quadrado
     soma = np.sum((vetor1 - vetor2)**2)
+    #a raiz da soma feita sera a distancia euclidiana
     raiz = np.sqrt(soma)
     return raiz
 
 #funcao kmeans
-def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_iteracoes):   
-    #decidir se vai receber o numero de clusters como parametro ou se vai usar max cluster
-    #decidir se vai receber a taxa de erro como parametro ou se vai usar a taxa de erro definida fora
-        
+def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_iteracoes):           
     #criamos uma lista que vai guardar os centroides 
     #esses centroides vao ser inicializados de forma aleatoria
     centroides = vetor_dados[np.random.randint(0, num_linhas - 1, size=num_clusters)]
@@ -87,8 +87,7 @@ def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_it
         #estamos calculando
         temp_centroides = np.zeros((num_clusters, num_colunas))
         
-        #para cada cluster vamos encontrar todos os dados que estao mais proximos dele e vamos achar o ponto medio entre 
-        #eles
+        #para cada cluster vamos encontrar todos os dados que estao mais proximos dele e vamos achar o ponto medio entre eles
         #esse ponto medio sera o valor do novo centroide
         for indice in range(len(centroides)):
             dados_proximos = [i for i in range(len(dados_cluster)) if dados_cluster[i] == indice]   
@@ -117,7 +116,10 @@ arquivo = 'C:/Users/Mariana/Desktop/IA/Saidas_teste/Process_Mining_Abstracts_TF.
 #a matriz dados vai guardar todo o conteudo lido do arquivo, inclusive os cabecalhos (documentos e palavras)
 dados = pegaTexto(arquivo)
 
+#o vetor de palavras vai guardar o cabecalho "linha" que foi lido do Excel
 palavras = dados.axes[1].tolist()
+
+#o vetor de documentos vai guardar o cabecalho "coluna" que foi lido do Excel
 documentos = dados.axes[0].tolist()
 
 #a variavel "colunas" guarda a quantidade de colunas que existem no excel passado
@@ -137,7 +139,6 @@ a = 0
 b = 0
 
 #esse loop vai guardar os valores de conteudo em um outro vetor
-#verificar se e realmente necessario criar essa matriz
 while a < linhas:
     while b< colunas:
         valores[a][b] = conteudo[a][b]
@@ -186,8 +187,6 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluste
 def execute(clusters, erro, maxIter):
 
     
-#    while k < maxIter:
-#        
     start = time.time()
 
     centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
@@ -195,8 +194,6 @@ def execute(clusters, erro, maxIter):
     tempo_total = ("--- %s seconds ---" % (time.time() - start))
     
     escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, 1, iteracoes)
-    
-      
     
     return
 
