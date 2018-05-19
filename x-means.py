@@ -184,39 +184,6 @@ def inicializeX(max_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, m
        
        # centroides, dados_cluster, iteracoes, num_clusters = [kmeans(k, taxa_erro, num_linhas, num_colunas, vetor_dados, max_iteracoes,centroid_list) for k in range(1,max_clusters)]
         #bic = [compute_bic(kmeansi.centroids,kmeansi.num_cluster_xmeans,vetor_dados,num_colunas) for kmeansi in result_kmeans]
-       
-def inicializeNormal(vetor_dados,num_linhas,num_clusters):
-    #Retorna um centroid aleatorio
-    return vetor_dados[np.random.randint(0, num_linhas - 1, size=num_clusters)]
- 
-def inicializePlus(vetor_dados,num_linhas,num_clusters):
-    #Esse metodo busca inicializar os centroids com melhor distribuicao pelos dados
-    #Para isso ele calcula a distancia dos dados ate os centroids ja existentes e
-    #tenta criar novos centroids de forma que todos os centroids fiquem uniformemente
-    #distribuidos pelos dados
-   
-    #Cria um indice aleatorio que sera utilizado para escolher o centroid logo em seguida
-    indiceInicial = np.random.randint(0, num_linhas)
-   
-    #Retorna um centroid aleatorio para iniciar o algoritmo
-    centroids = [vetor_dados[indiceInicial]]
- 
-    i = 0
-    for k in range(1, num_clusters):
-        #Calculamos a menor distancia de cada dado para todos os centroids
-        distancia = scipy.array([min([scipy.inner(c-x,c-x) for c in centroids]) for x in vetor_dados])
-        #Calcula a probabilidade de escolher um dado como novo centroid
-        probabilidade = distancia/distancia.sum()
-        totalProbabilidade = probabilidade.cumsum()
-        r = scipy.rand()
-        #Se o numero gerado pela variavel 'r' for menor do que o valor de probabilidade
-        #armazenado na variavel 'p', entao o novo centroid eh o dado na variavel 'p'
-        for j,p in enumerate(totalProbabilidade):
-            if r < p:
-                i = j
-                break
-        centroids.append(vetor_dados[i])
-    return centroids
  
 #funcao que carrega o arquivo de entrada para kmeans
 def carregaTXT(nome):    
