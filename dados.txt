@@ -1,0 +1,6 @@
+0	1	4	3	teste
+1	1	2	4	abc
+0	0	1	1	mais
+1	0	2	0	alo
+2	4	0	0	lorem
+1	2	3	4	ipsum
