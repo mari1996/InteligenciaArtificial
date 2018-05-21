@@ -277,6 +277,9 @@ def kmeans(num_clusters, taxa_erro, num_linhas, num_colunas, vetor_dados, max_it
             temp_centroides[indice, :] = centroide
             
         centroides = temp_centroides
+        
+        
+        
            
     return centroides, dados_cluster, iteracoes
 
@@ -327,7 +330,7 @@ while a < linhas:
 
 
 #funcao que faz a escrita do log execucao
-def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluster, numArquivo, iteracoes):
+def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluster, numArquivo, iteracoes, silhouette):
     
     #essa funcao faz a escrita do log de execucao de cada chamada ao k-means e salva no seguinte formato:
     arquivo = open('C:/Users/Mariana/Desktop/EP IA - Sarajane/saidas/execucao'+str(numArquivo)+'.txt', 'w')
@@ -362,7 +365,18 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluste
         arquivo.write('Documento '+str(docs[m])+' - Cluster '+str(int(vetor_cluster.item(m)))+'\n')
         
         m += 1
-     
+        
+    m = 0
+    
+    arquivo.write('\n')
+    
+    
+    while m < len(docs):
+        
+        arquivo.write('Documento '+str(docs[m])+' - Valor silhouette '+str(silhouette[m])+'\n')
+        
+        m += 1
+    
     arquivo.close()
     
     return
@@ -373,15 +387,16 @@ def escrita(arquivo_entrada, num_clusters, tempo_total, erro, docs, vetor_cluste
 #ele serve como um main que vai chamar varias vezes o kmeans, sempre variando os parametros usados    
 def execute(clusters, erro, maxIter):
 
+    for i in range(0, 10):    
+        start = time.time()
     
-    start = time.time()
-
-    centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
-    
-    tempo_total = ("--- %s seconds ---" % (time.time() - start))
-    
-    #escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, 2, iteracoes)
-    teste = silhouette(valores, dados_cluster, clusters)
+        centroides, dados_cluster, iteracoes = kmeans(clusters, erro, linhas, colunas, valores, maxIter)
+        
+        tempo_total = ("--- %s seconds ---" % (time.time() - start))
+        
+        
+        silhuete = silhouette(valores, dados_cluster, clusters)
+        escrita(arquivo, clusters,tempo_total,  erro, documentos, dados_cluster, i, iteracoes, silhuete)
 
     return
 
